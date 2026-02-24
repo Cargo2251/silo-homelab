@@ -1,0 +1,47 @@
+services:
+  system-backup:
+    image: offen/docker-volume-backup:v2
+    container_name: system-backup
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/cargo/docker:/backup/docker-configs:ro
+      - /mnt/storage/backups:/archive
+    environment:
+      - BACKUP_CRON_EXPRESSION= 0 3 * * *
+      - BACKUP_RETENTION_DAYS=7
+      - BACKUP_FILENAME=server_files_%Y-%m-%d.tar.gz
+  nextcloud-db-backup:
+    image: prodrigestivill/postgres-backup-local
+    container_name: nextcloud-db-backup
+    restart: unless-stopped
+    networks:
+      - proxy_net
+    volumes:
+      - /mnt/storage/backups/nextcloud_db:/backups
+    environment:
+      - POSTGRES_HOST=nextcloud-db-1
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=${DBN_USER}
+      - POSTGRES_PASSWORD=${DBN_PASS}
+      - SCHEDULE=@daily
+      - BACKUP_KEEP_DAYS=7
+  grafana-db-backup:
+    image: prodrigestivill/postgres-backup-local
+    container_name: grafana-db-backup
+    restart: unless-stopped
+    networks:
+      - proxy_net
+    volumes:
+      - /mnt/storage/backups/grafana_db:/backups
+    environment:
+      - POSTGRES_HOST=grafana-db-1
+      - POSTGRES_DB=grafana
+      - POSTGRES_USER=${DBG_USER}
+      - POSTGRES_PASSWORD=${DBG_PASS}
+      - SCHEDULE=@daily
+      - BACKUP_KEEP_DAYS=7
+
+networks:
+  proxy_net:
+    external: true

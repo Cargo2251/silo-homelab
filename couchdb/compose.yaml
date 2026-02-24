@@ -1,0 +1,18 @@
+services:
+  couchdb:
+    image: couchdb:latest
+    container_name: couchdb
+    restart: unless-stopped
+    ports:
+      - 5984:5984
+    environment:
+      - COUCHDB_USER=${DB_USER}
+      - COUCHDB_PASSWORD=${DB_PASS}
+    volumes:
+      - ./data:/opt/couchdb/data
+    networks:
+      - proxy_net
+
+networks:
+  proxy_net:
+    external: true

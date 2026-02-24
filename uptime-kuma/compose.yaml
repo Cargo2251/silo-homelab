@@ -1,0 +1,15 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    restart: unless-stopped
+    labels:
+      - docker-volume-backup.stop-during-backup=true
+    volumes:
+      - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy_net
+
+networks:
+  proxy_net:
+    external: true

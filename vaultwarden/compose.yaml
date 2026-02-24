@@ -1,0 +1,16 @@
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: always
+    volumes:
+      - ./data:/data
+    environment:
+      - DOMAIN=https://vault.cargolab.dev
+      - SINGNUPS_ALLOWED=false
+      - ADMIN_TOKEN=${TOKEN}
+    networks:
+      - proxy_net
+networks:
+  proxy_net:
+    external: true

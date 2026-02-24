@@ -1,0 +1,20 @@
+services:
+    speedtest-tracker:
+        image: lscr.io/linuxserver/speedtest-tracker:latest
+        restart: unless-stopped
+        container_name: speedtest-tracker
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - SPEEDTEST_SCHEDULE=0 * * * *
+            - APP_KEY=${KEY}
+            - APP_URL=https://speedtest.cargolab.dev
+            - DB_CONNECTION=sqlite
+        volumes:
+            - ./config:/config
+        networks:
+            - proxy_net
+
+networks:
+  proxy_net:
+    external: true

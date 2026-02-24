@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    networks:
+      - proxy_net
+
+  app:
+    image: nextcloud:latest
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - nextcloud_config:/var/www/html
+      - /mnt/storage/nextcloud_data:/var/www/html/data
+      - /mnt/storage:/mnt/external
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=nextcloud
+      - POSTGRESS_USER=${DB_USER}
+      - POSTGRESS_PASSWORD=${DB_PASS}
+    networks:
+      - proxy_net
+
+volumes:
+  db_data:
+  nextcloud_config:
+
+networks:
+  proxy_net:
+    external: true

@@ -1,0 +1,9 @@
+*/*
+
+!*/compose.yaml
+
+!scripts/
+!scripts/*
+
+*.env
+*.log
