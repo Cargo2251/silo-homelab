@@ -17,7 +17,7 @@ for CONTAINER in "${CONTAINERS_NAMES[@]}"; do
         if ! docker compose up -d; then
             echo "$(date) - Restart failed! Grabbing logs.." >> "$MAIN_LOG"
 
-            docker logs "$CONTAINER" --tail 50 > ~/homelab_${CONTAINER}_error.log
+            docker logs "$CONTAINER" --tail 50 > "$HOME/homelab_${CONTAINER}_error".log
         else
             echo "$(date) - Ran compose up, container should be up shortly." >> "$MAIN_LOG"
 
