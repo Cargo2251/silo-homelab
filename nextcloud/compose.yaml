@@ -14,6 +14,7 @@ services:
   app:
     image: nextcloud:latest
     restart: always
+    container_name: nextcloud
     depends_on:
       - db
     volumes:
