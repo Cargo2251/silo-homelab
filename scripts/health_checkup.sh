@@ -9,9 +9,9 @@ if [ "$( docker container inspect -f '{{.State.Running}}' $CONTAINER_NAME)" = "t
     exit
 else
     echo "$(date) - The $CONTAINER_NAME is not running, attempting to restart" >> "$MAIN_LOG"
-    cd $COMPOSE_DIR || exit 1; docker compose up -d
+    cd $COMPOSE_DIR || exit 1;
 
-    if [ $? -ne 0 ]; then
+    if ! docker compose up -d; then
         echo "$(date) - Restart failed! Grabbing logs.." >> "$MAIN_LOG"
 
         docker logs "$CONTAINER_NAME" --tail 50 > ~/homelab_${CONTAINER_NAME}_error.log
