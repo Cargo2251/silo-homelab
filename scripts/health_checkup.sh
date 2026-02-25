@@ -12,7 +12,7 @@ for CONTAINER in "${CONTAINERS_NAMES[@]}"; do
         echo "$(date) - The ${CONTAINER} is running" >> "$MAIN_LOG"
     else
         echo "$(date) - The ${CONTAINER} is not running, attempting to restart" >> "$MAIN_LOG"
-        cd $COMPOSE_DIR || exit 1;
+        cd "$COMPOSE_DIR" || exit 1;
 
         if ! docker compose up -d; then
             echo "$(date) - Restart failed! Grabbing logs.." >> "$MAIN_LOG"
