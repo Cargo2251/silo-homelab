@@ -1,0 +1,10 @@
+notif:
+  telegram:
+    templateBody: |
+      🚨 **Update Available!** 🚨
+      Container: {{ .Entry.Image }}
+      Provider: {{ .Entry.Provider }}
+
+providers:
+  docker:
+    watchByDefault: true

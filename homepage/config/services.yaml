@@ -1,0 +1,91 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/services/
+- Info:
+    - Monthly View:
+        icon: mdi-calendar
+        widget:
+          type: calendar
+          timezone: Europe/London
+          firstDayInWeek: monday
+          view: monthly
+          maxEvents: 10
+          showBorders: true
+          integrations:
+            - type: ics
+              name: Schedule
+              url: ${CALENDAR_URL}
+    - Tailscale:
+        icon: tailscale
+        widget:
+          type: tailscale
+          deviceid: {{HOMEPAGE_VAR_TAIL_ID}}      
+          key: {{HOMEPAGE_VAR_TAIL_KEY}}
+    - Speedtest Tracker:
+        icon: speedtest-tracker
+        href: https://speedtest.cargolab.dev
+        siteMonitor: https://speedtest.cargolab.dev
+        widget:
+            type: speedtest
+            url: https://speedtest.cargolab.dev
+            key: ${SPEED_KEY}        
+    - Uptime Kuma:
+       icon: uptime-kuma
+       href: https://kuma.cargolab.dev
+       description: Health check and notification
+       siteMonitor: https://kuma.cargolab.dev
+       widget:
+         type: uptimekuma
+         url: https://kuma.cargolab.dev
+         slug: default          
+- Infrastructure:
+    - Nginx Proxy Manager:
+        icon: nginx-proxy-manager
+        href: https://npm.cargolab.dev
+        siteMonitor: https://npm.cargolab.dev
+        widget:
+            type: npm
+            url: https://npm.cargolab.dev
+            username: {{HOMEPAGE_VAR_NPM_USER}}
+            password: {{HOMEPAGE_VAR_NPM_PASS}}
+    - Proxmox:
+        icon: proxmox
+        href: {{HOMEPAGE_VAR_PROX_IP}}
+        widget:
+            type: proxmox
+            url: {{HOMEPAGE_VAR_PROX_IP}}
+            username: {{HOMEPAGE_VAR_PROX_USER}}
+            password: {{HOMEPAGE_VAR_PROX_PASS}}
+            node: pve
+    - Grafana:
+        icon: grafana
+        href: https://grafana.cargolab.dev
+        widget:
+            type: grafana
+            url: https://grafana.cargolab.dev
+            username: {{HOMEPAGE_VAR_GRAF_USER}}
+            password: {{HOMEPAGE_VAR_GRAF_PASS}}
+    - Nextcloud:
+        icon: nextcloud
+        href: https://nextcloud.cargolab.dev
+        description: Cloud based alternative, self hosted
+        siteMonitor: https://nextcloud.cargolab.dev
+        widget:
+            type: nextcloud
+            url: https://nextcloud.cargolab.dev
+            key: {{HOMEPAGE_VAR_NEXTCLOUD_KEY}}
+    - Vaultwarden:
+        icon: vaultwarden
+        href: https://vault.cargolab.dev
+        description: Password manager and storage
+        siteMonitor: https://vault.cargolab.dev
+    - Dozzle:
+       icon: dozzle
+       description: Docker container logs and tracking
+       href: https://dozzle.cargolab.dev
+       siteMonitor: https://dozzle.cargolab.dev
+    - Dockge:
+       icon: dockge
+       description: Stack manager
+       href: https://dockge.cargolab.dev
+       siteMonitor: https://dockge.cargolab.dev      

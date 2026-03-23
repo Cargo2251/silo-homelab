@@ -1,0 +1,20 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    env_file:
+      - .env
+    volumes:
+      - ./config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: home.cargolab.dev
+      PUID: 1000
+      PGID: 1000
+    restart: unless-stopped
+    networks:
+      - proxy_net
+
+networks:
+  proxy_net:
+    external: true

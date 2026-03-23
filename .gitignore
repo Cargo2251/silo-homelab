@@ -1,0 +1,13 @@
+*
+
+!*/
+
+!*.yml
+!*.yaml
+!*.sh
+!*.md
+!.gitignore
+
+*.env
+.env*
+**/*.env

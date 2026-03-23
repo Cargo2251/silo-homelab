@@ -1,0 +1,17 @@
+services:
+  dockge:
+    image: louislam/dockge:1
+    restart: unless-stopped
+    container_name: dockge
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data
+      - /home/cargo/docker:/home/cargo/docker
+    environment:
+      - DOCKGE_STACKS_DIR=/home/cargo/docker
+    networks:
+      - proxy_net
+
+networks:
+  proxy_net:
+    external: true
