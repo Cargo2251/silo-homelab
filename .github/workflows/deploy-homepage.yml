@@ -1,0 +1,21 @@
+name: Deploy Homepage
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'homepage/**'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Fetch Latest Code & Deploy
+        run: |
+          cd /home/cargo/docker/homepage
+          
+          git pull origin main
+          
+          docker compose up -d --remove-orphans

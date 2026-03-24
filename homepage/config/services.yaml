@@ -1,7 +1,7 @@
 ---
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
-- Info:
+- Info: #Checking to see if the actions actually work.
     - Monthly View:
         icon: mdi-calendar
         widget:
