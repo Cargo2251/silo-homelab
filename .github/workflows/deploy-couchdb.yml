@@ -1,0 +1,22 @@
+name: Deploy Couchdb
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'couchdb/**'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Fetch Latest Code & Deploy
+        run: |
+          cd /home/cargo/docker/couchdb 
+
+          git fetch --all
+          git reset --hard origin/main
+          
+          docker compose up -d --remove-orphans

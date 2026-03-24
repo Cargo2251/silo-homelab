@@ -1,0 +1,22 @@
+name: Deploy Grafana
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'grafana/**'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Fetch Latest Code & Deploy
+        run: |
+          cd /home/cargo/docker/grafana 
+
+          git fetch --all
+          git reset --hard origin/main
+          
+          docker compose up -d --remove-orphans

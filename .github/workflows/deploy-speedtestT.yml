@@ -1,0 +1,22 @@
+name: Deploy Speedtest-Tracker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'speedtest-tracker/**'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Fetch Latest Code & Deploy
+        run: |
+          cd /home/cargo/docker/speedtest-tracker 
+
+          git fetch --all
+          git reset --hard origin/main
+          
+          docker compose up -d --remove-orphans

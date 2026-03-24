@@ -1,0 +1,22 @@
+name: Deploy Diun
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'diun/**'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Fetch Latest Code & Deploy
+        run: |
+          cd /home/cargo/docker/diun
+
+          git fetch --all
+          git reset --hard origin/main
+          
+          docker compose up -d --remove-orphans
