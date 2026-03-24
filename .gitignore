@@ -8,6 +8,9 @@
 !*.md
 !.gitignore
 
+npm/letsencrypt/
+npm/data/
+
 *.env
 .env*
 **/*.env
