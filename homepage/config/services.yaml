@@ -51,6 +51,7 @@
     - Proxmox:
         icon: proxmox
         href: {{HOMEPAGE_VAR_PROX_IP}}
+        siteMonitor: {{HOMEPAGE_VAR_PROX_IP}}  
         widget:
             type: proxmox
             url: {{HOMEPAGE_VAR_PROX_IP}}
@@ -60,6 +61,7 @@
     - Grafana:
         icon: grafana
         href: https://grafana.cargolab.dev
+        siteMonitor: https://grafana.cargolab.dev
         widget:
             type: grafana
             url: https://grafana.cargolab.dev
