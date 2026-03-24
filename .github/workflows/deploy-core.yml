@@ -1,0 +1,30 @@
+name: Deploy Core Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'homepage/**'
+      - 'npm/**'
+      - 'diun/**'
+      - 'vaultwarden/**'
+      - 'couchdb/**'
+      - 'dockge/**'
+      - 'grafana/**'
+      - 'nextcloud/**'
+      - 'docker-backup/**'
+      - 'dozzle/**'
+      - 'uptime-kuma/**'
+      - 'speedtest-tracker/**'
+jobs:
+  deploy-core:
+    runs-on: self-hosted
+    steps:
+      - name: Sync Core Files
+        run: |
+          cd /home/cargo/docker
+          
+          git fetch --all
+          git reset --hard origin/main
+          

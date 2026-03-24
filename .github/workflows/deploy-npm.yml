@@ -1,11 +1,11 @@
-name: Deploy Homepage
+name: Deploy NPM 
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'homepage/**'
+      - 'npm/**'
 
 jobs:
   deploy:
@@ -14,9 +14,9 @@ jobs:
     steps:
       - name: Fetch Latest Code & Deploy
         run: |
-          cd /home/cargo/docker/homepage
+          cd /home/cargo/docker/npm 
 
-          git fetch --all
-          git reset --hard origin/main
-          
+          git fetch --all 
+          git reset --hard origin/main 
+
           docker compose up -d --remove-orphans
