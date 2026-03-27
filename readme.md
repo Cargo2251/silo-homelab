@@ -51,10 +51,9 @@ This environment is continuously evolving. The current trajectory includes:
 
 - [x] Establish CD pipeline via GitHub Runners.
 - [x] Engineer idempotent Ansible playbooks for zero-touch Docker provisioning.
-- [ ] Engineer `harden-os.yml` playbook for automated OS security (SSH hardening, UFW, Fail2ban).
+- [x] Engineer `harden-os.yml` playbook for automated OS security (SSH hardening, UFW, Fail2ban).
 - [ ] Implement Continuous Integration (CI) with GitHub Actions for Ansible linting and syntax validation.
 - [ ] Deploy secondary and tertiary Ubuntu nodes to establish a distributed architecture.
 - [ ] Migrate standalone Docker workloads into a High-Availability **K3s / Kubernetes** cluster.
-
 ---
 *This repository reflects active learning and architectural experimentation.*
