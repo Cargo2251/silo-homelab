@@ -1,0 +1,50 @@
+---
+- name: Set up Docker Engine and Dependencies
+  hosts: homelab
+  become: true
+
+  tasks:
+  - name: Set up main dependencies
+    ansible.builtin.apt:
+        pkg:
+          - ca-certificates
+          - curl
+          - gnupg
+  
+  - name: Setting up Keyring file
+    ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+  
+  - name: Download key and send it to file.
+    ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc 
+        mode: "0644"
+  
+  - name: Docker | apt source
+    ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
+        update_cache: yes 
+        state: present
+
+  - name: Installing Docker
+    ansible.builtin.apt:
+        pkg:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+  
+  - name: Ensure docker group exists
+    ansible.builtin.group:
+        name: docker
+        state: present
+          
+  - name: Update user group
+    ansible.builtin.user:
+        name: cargo
+        groups: docker 
+        append: yes 

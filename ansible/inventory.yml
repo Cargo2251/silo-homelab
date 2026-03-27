@@ -5,4 +5,7 @@ all:
         silo_server:
           ansible_host: 192.168.1.100 
           ansible_user: cargo
-          
+        tester_server:
+          ansible_host: 192.168.1.102
+          ansible_user: cargo
+

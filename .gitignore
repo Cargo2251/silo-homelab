@@ -8,7 +8,8 @@
 !*.md
 !.gitignore
 
-ansible/group_vars/homelab/vault.yml
+ansible/host_vars/silo_server/vault.yml
+ansible/host_vars/tester_server/vault.yml
 npm/letsencrypt/
 npm/data/
 
