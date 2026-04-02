@@ -3,7 +3,7 @@ all:
     homelab:
       hosts:
         silo_server:
-          ansible_host: 192.168.1.100 
+          ansible_host: 192.168.1.100
           ansible_user: cargo
         tester_server:
           ansible_host: 192.168.1.102

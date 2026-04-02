@@ -2,11 +2,11 @@
 - name: Update server and install htop
   hosts: silo_server
   become: true
-  
+
   tasks:
     - name: Update server with apt
       ansible.builtin.apt:
-        update_cache: yes
+        update_cache: true
 
     - name: Install htop
       ansible.builtin.apt:

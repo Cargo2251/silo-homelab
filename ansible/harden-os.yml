@@ -1,14 +1,14 @@
 ---
 - name: Hardening the OS by enabling UFW, install Fail2ban and SSH lockdown.
   hosts: homelab
-  become: yes 
-  
+  become: true 
+
   tasks:
   - name: Allow SSH trafic UFW.
     community.general.ufw:
-        rule: allow 
+        rule: allow
         name: OpenSSH
-  
+
   - name: Enable UFW and set default policy.
     community.general.ufw:
         state: enabled
@@ -18,7 +18,7 @@
   - name: Install the Fail2ban package.
     ansible.builtin.apt:
         name: fail2ban
-        update_cache: yes
+        update_cache: true 
 
   - name: Run daemon on boot.
     ansible.builtin.systemd_service:
@@ -26,7 +26,7 @@
         enabled: true
         state: started
 
-  - name: Disable Root Login 
+  - name: Disable Root Login
     ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^#?PermitRootLogin'
@@ -40,7 +40,7 @@
 
   - name: Neutralize cloud-init password overrides.
     ansible.builtin.file:
-        path: /etc/ssh/sshd_config.d/50-cloud-init.conf 
+        path: /etc/ssh/sshd_config.d/50-cloud-init.conf
         state: absent
 
   - name: Restart SSH Service to apply changes.
