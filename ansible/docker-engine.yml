@@ -48,3 +48,9 @@
         name: cargo
         groups: docker 
         append: yes 
+
+  - name: Install ansible-lint
+    ansible.builtin.pip:
+        name: ansible-lint
+        break_system_packages: true 
+        state: present

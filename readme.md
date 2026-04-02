@@ -1,59 +1,122 @@
-# 🏗️ Silo Homelab: DevOps Infrastructure & Learning Playground
+This repository documents the infrastructure and configuration behind a 
+self-hosted production environment running on a bare-metal Proxmox hypervisor. 
+It serves dual purpose: a platform for hands-on DevOps practice with real 
+operational stakes, and a personal cloud running services I depend on daily 
+— giving me full ownership over my data and tooling.
 
-Welcome to my central infrastructure repository. This project serves as my active homelab and a hands-on playground for mastering modern DevOps practices, Infrastructure as Code (IaC), and Continuous Integration/Continuous Deployment (CI/CD).
+## Architecture
 
-The overarching goal of this environment is to transition from single-node manual administration to a fully automated, highly available Kubernetes cluster.
+### Physical host
 
-## 📐 Architecture Overview
+| | |
+|---|---|
+| Machine | HP Omen Laptop |
+| CPU | Intel Core i7-7700HQ (4c/8t) |
+| RAM | 12GB |
+| Storage | 256GB NVMe (Proxmox OS) + 1TB HDD (VM storage) |
+| Hypervisor | Proxmox VE |
 
-The physical foundation is a bare-metal hypervisor running **Proxmox VE**, managing virtualized Ubuntu nodes with strict resource allocation to optimize memory and compute overhead.
+### Virtual machines
 
-### Current Node Topology
-* **`silo_server` (Production):** The primary Docker engine hosting the main data plane, monitoring stack, and edge routing.
-* **`tester` (Staging):** An isolated, dynamically provisioned environment for safely testing Ansible playbooks and deployment strategies before pushing to production.
+| VM | Role | CPU | RAM | Storage | State |
+|---|---|---|---|---|---|
+| `silo_server` | Production | 4 vCPU | 6GB | 32GB | Always on |
+| `tester` | Staging | 4 vCPU | 4GB | 32GB | On-demand |
 
-## ⚙️ Infrastructure as Code (IaC)
+Both VMs use Proxmox-bridged networking with static IPs reserved at the 
+router gateway. `silo_server` runs the GitHub Actions self-hosted runner 
+and all production workloads.
 
-All node provisioning and configuration management is handled declaratively via **Ansible**. 
+### Networking & security
 
-* **Zero-Touch Provisioning:** Playbooks (like `docker-engine.yml`) are engineered for strict idempotency, capable of bootstrapping a blank Ubuntu VM into a baseline, correctly permissioned Docker host in seconds.
-* **Secret Management:** Sensitive credentials and privilege escalation passwords are encrypted using `ansible-vault`, utilizing a `host_vars` architecture to isolate node-specific secrets.
+All inbound traffic enters exclusively via **Tailscale** — no ports are 
+exposed to the public internet except 80 and 443 on `silo_server`, which 
+are consumed by Nginx Proxy Manager.
+
+All containers are isolated on a dedicated Docker network (`proxy_net`). 
+No container is directly accessible — every request must pass through NPM.
+
+Cloudflare DNS records for each service resolve to the Tailscale IP, 
+meaning services are unreachable without an active Tailscale connection.
+```
+Client (Tailscale) → Cloudflare DNS → Tailscale IP
+                   → NPM (80/443) → proxy_net → container
+```
+
+### How a deployment works
+
+1. A change is pushed to `main` in this repo
+2. The self-hosted GitHub Actions runner on `silo_server` detects the push
+3. The runner pulls the updated config and redeploys only the affected stack
+4. Services are reachable within seconds via their Tailscale-routed DNS names
+
+### Security model
+
+All external access is Tailscale-gated at the network layer — no services 
+are reachable from the public internet. NPM acts as the sole ingress point; 
+all containers sit on an isolated `proxy_net` and are unreachable directly.
+
+Host-level controls:
+- SSH key authentication only — no password login, no new user creation
+- Proxmox web UI restricted to local network only
+- GitHub Actions runner scoped to push events for deployment workflows - CI lint checks run on pull requests, deployment workflows do not
+- Registration disabled on all internet-facing services (Vaultwarden, Nextcloud)
 
 
-## 🚀 Continuous Deployment & GitOps 
+## Active workloads
 
-Deployments and configuration updates are driven by a GitOps methodology. The repository utilizes a **GitHub Self-Hosted Runner** residing on the infrastructure. When code is pushed to the `main` branch, the runner detects the drift and automatically pulls the latest configurations down to the production environment.
+All services run as containers on `silo_server`, managed via Docker Compose 
+and deployed through the GitOps pipeline. Every service is routed through 
+NPM and accessible only over Tailscale.
 
-## 📦 Active Workloads
+### Monitoring & observability
+| Service | Purpose |
+|---|---|
+| Prometheus + Node Exporter + cAdvisor | Metrics collection — host, container, and process level |
+| Grafana | Metrics visualisation and alerting |
+| Uptime Kuma | Service uptime monitoring and status pages |
+| Speedtest Tracker | Scheduled ISP performance logging |
+| Diun | Container image update notifications |
+| Dozzle | Real-time container log viewer |
 
-The current production node runs a robust stack of containerized services managed via standard deployment pipelines.
+### Infrastructure & routing
+| Service | Purpose |
+|---|---|
+| Nginx Proxy Manager | Sole ingress point — reverse proxies all container traffic |
+| Dockge | Compose stack management UI |
+| Homepage | Internal service dashboard |
 
-**Monitoring & Observability:**
-* Grafana, Prometheus, Node Exporter, cAdvisor
-* Uptime Kuma, Speedtest-Tracker
-* Diun (Docker Image Update Notifier)
+### Core services
+| Service | Purpose |
+|---|---|
+| Vaultwarden | Self-hosted password manager (Bitwarden-compatible) |
+| Nextcloud | Self-hosted file sync and collaboration |
+| CouchDB | Database backend for Obsidian LiveSync |
+| docker-volume-backup | Automated container volume backups |
+| postgres-backup-local | Automated PostgreSQL backups |
 
-**Infrastructure & Routing:**
-* NPM (Nginx Proxy Manager)
-* Dockge (Stack management)
-* Homepage (Internal dashboard)
-* Dozzle (Real-time log viewer)
+## Roadmap & Trajectory
 
-**Core Services & Data:**
-* Vaultwarden
-* Nextcloud
-* CouchDB - For Obsidian LiveSync
-* Automated local and volume backups (`docker-volume-backup`, `postgres-backup-local`)
+### Completed
+- [x] CD pipeline via GitHub Actions self-hosted runner
+- [x] Idempotent Ansible playbook for zero-touch Docker provisioning
+- [x] OS hardening playbook (SSH, UFW, Fail2ban)
+- [x] Monitoring stack (Prometheus, Grafana, cAdvisor, Node Exporter)
+- [x] Tailscale + Cloudflare DNS network architecture
 
-## 🗺️ Roadmap & Trajectory
+### In progress
+- [ ] CI pipeline — linting and syntax validation on Ansible 
+      playbook and Bash script push (ansible-lint, shellcheck)
+- [ ] Extract monitoring stack to standalone repo
+- [ ] Extract Ansible playbooks to standalone repo
 
-This environment is continuously evolving. The current trajectory includes:
+### Next
+- [ ] Terraform — provision Proxmox VMs declaratively, 
+      replacing manual VM creation
+- [ ] Cloud foundations — deploy existing stack to AWS EC2, 
+      map homelab concepts to cloud equivalents
+- [ ] AWS Cloud Practitioner certification
 
-- [x] Establish CD pipeline via GitHub Runners.
-- [x] Engineer idempotent Ansible playbooks for zero-touch Docker provisioning.
-- [x] Engineer `harden-os.yml` playbook for automated OS security (SSH hardening, UFW, Fail2ban).
-- [ ] Implement Continuous Integration (CI) with GitHub Actions for Ansible linting and syntax validation.
-- [ ] Deploy secondary and tertiary Ubuntu nodes to establish a distributed architecture.
-- [ ] Migrate standalone Docker workloads into a High-Availability **K3s / Kubernetes** cluster.
----
-*This repository reflects active learning and architectural experimentation.*
+### Long term
+- [ ] Kubernetes — migrate appropriate workloads to K3s
+- [ ] Expand to multi-node architecture
