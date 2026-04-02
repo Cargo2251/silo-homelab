@@ -1,4 +1,4 @@
-services:
+services: # testing
   dozzle:
     container_name: dozzle
     image: amir20/dozzle:latest
