@@ -103,10 +103,11 @@ NPM and accessible only over Tailscale.
 - [x] OS hardening playbook (SSH, UFW, Fail2ban)
 - [x] Monitoring stack (Prometheus, Grafana, cAdvisor, Node Exporter)
 - [x] Tailscale + Cloudflare DNS network architecture
+- [x] Bash Health Script - layered DNS/TCP/HTTP diagnostics for all services
+- [x] CI pipeline - linting and syntax validation on Ansible playbook
 
 ### In progress
-- [ ] CI pipeline — linting and syntax validation on Ansible 
-      playbook and Bash script push (ansible-lint, shellcheck)
+- [ ] CI pipeline — linting and syntax validation Bash script push (ansible-lint, shellcheck)
 - [ ] Extract monitoring stack to standalone repo
 - [ ] Extract Ansible playbooks to standalone repo
 
