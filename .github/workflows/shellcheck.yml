@@ -1,0 +1,24 @@
+--- 
+name: Bash Shellcheck
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+    
+jobs:
+  shellcheck:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Runs shellcheck
+        run: find scripts/ -name "*.sh" -exec shellcheck {} +
