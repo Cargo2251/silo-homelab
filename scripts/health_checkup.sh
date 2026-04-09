@@ -5,11 +5,19 @@ log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >>"$LOG"
 }
 
+default_URLs=urls.conf
+count_on=0
+count_off=0
+
 GREEN=$'\033[0;32m'
 RED=$'\033[0;31m'
 RESET=$'\033[0m'
 
-default_URLs=urls.conf
+if [[ ! -f "$default_URLs" ]]; then
+  echo "Config file not found: $default_URLs"
+  exit 1
+fi
+
 site_URLs=()
 
 while IFS= read -r line; do
@@ -27,6 +35,8 @@ for x in "${site_URLs[@]}"; do
 
   if [[ -z "$resolved_ip" ]]; then # If resolved_ip is empty, that means that no IP has been logged.
     log "DNS Failed for ${x}"
+    printf "%-15s %s\n" "${x}" "${RED}OFFLINE${RESET}"
+    ((count_off++))
     continue
   fi
 
@@ -36,10 +46,14 @@ for x in "${site_URLs[@]}"; do
   case "$exit_code" in # Check if connection failed at TCP (7) or DNS (6)
   6)
     log "Exit code 6: ${x} could not be resolved"
+    printf "%-15s %s\n" "${x}" "${RED}OFFLINE${RESET}"
+    ((count_off++))
     continue
     ;;
   7)
     log "Exit code 7: Failed to connect to ${x}"
+    printf "%-15s %s\n" "${x}" "${RED}OFFLINE${RESET}"
+    ((count_off++))
     continue
     ;;
   esac
@@ -48,10 +62,14 @@ for x in "${site_URLs[@]}"; do
   4* | 5*)
     log "HTTP 4/5** on ${x} ${http_code} found, check it"
     printf "%-15s %s\n" "${x}" "${RED}OFFLINE${RESET}"
+    ((count_off++))
     ;;
   *)
     log "${x} resolved to ${resolved_ip} - HTTP ${http_code}"
+    ((count_on++))
     printf "%-15s %s\n" "${x}" "${GREEN}ONLINE${RESET}"
     ;;
   esac
 done
+
+printf "%-15s %s\n" "${GREEN}Healthy:${RESET} ${count_on}" "${RED}Failed:${RESET} ${count_off}"
