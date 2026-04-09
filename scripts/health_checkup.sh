@@ -26,8 +26,9 @@ RESET=$'\033[0m'
 while [[ $# -gt 0 ]]; do
   case "$1" in
   --help)
-    echo -e "Health Check script that checks at DNS,TCP,TLS level.\n
-  --verbose: turns on the verbose mode allowing the script to log on terminal it's actions.\n
+    echo -e "Health Check script that checks at DNS,TCP,TLS level.
+  (Script requries sudo access to write in /var/log/)
+  --verbose: turns on the verbose mode allowing the script to log on terminal it's actions.
   --file: allows to set a path for the config file where the URL's will be pulled from (one URL per line)"
     exit
     ;;
@@ -46,7 +47,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ ! -f "$default_URLs" ]]; then
+if [[ ! -f "${FILE:-$default_URLs}" ]]; then
   echo "Config file not found: $default_URLs"
   exit 1
 fi
