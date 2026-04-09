@@ -9,7 +9,15 @@ GREEN=$'\033[0;32m'
 RED=$'\033[0;31m'
 RESET=$'\033[0m'
 
-site_URLs=("home.cargolab.dev" "dozzle.cargolab.dev" "dockge.cargolab.dev" "nextcloud.cargolab.dev" "grafana.cargolab.dev" "vault.cargolab.dev" "sync.cargolab.dev" "npm.cargolab.dev" "speedtest.cargolab.dev" "kuma.cargolab.dev")
+default_URLs=urls.conf
+site_URLs=()
+
+while IFS= read -r line; do
+  if [[ -z $line ]]; then
+    continue
+  fi
+  site_URLs+=("$line")
+done <"$default_URLs"
 
 printf '%-15s %s\n' "URL" "STATUS"
 printf '%-15s %s\n' "--------" "--------"
