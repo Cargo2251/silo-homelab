@@ -95,8 +95,8 @@ for x in "${site_URLs[@]}"; do
   esac
 
   case "$http_code" in # Evaluate the HTTP reponse code.
-  4* | 5*)
-    log "HTTP 4/5** on ${x} ${http_code} found, check it"
+  0* | 4* | 5*)
+    log "HTTP 0/4/5** on ${x} ${http_code} found, check it"
     print_status "${x}" "${RED}OFFLINE${RESET}"
     ((count_off++))
     ;;

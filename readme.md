@@ -104,16 +104,13 @@ NPM and accessible only over Tailscale.
 - [x] Monitoring stack (Prometheus, Grafana, cAdvisor, Node Exporter)
 - [x] Tailscale + Cloudflare DNS network architecture
 - [x] Bash Health Script - layered DNS/TCP/HTTP diagnostics for all services
-- [x] CI pipeline - linting and syntax validation on Ansible playbook
+- [x] CI pipeline — linting and syntax validation Bash script push (ansible-lint, shellcheck)
 
 ### In progress
-- [ ] CI pipeline — linting and syntax validation Bash script push (ansible-lint, shellcheck)
-- [ ] Extract monitoring stack to standalone repo
-- [ ] Extract Ansible playbooks to standalone repo
-
-### Next
 - [ ] Terraform — provision Proxmox VMs declaratively, 
       replacing manual VM creation
+
+### Next
 - [ ] Cloud foundations — deploy existing stack to AWS EC2, 
       map homelab concepts to cloud equivalents
 - [ ] AWS Cloud Practitioner certification
