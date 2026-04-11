@@ -8,6 +8,14 @@
 !*.md
 !.gitignore
 
+!*.tf
+*.tfvars
+!*.tfvars.example
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
 ansible/host_vars/silo_server/vault.yml
 ansible/host_vars/tester_server/vault.yml
 npm/letsencrypt/
