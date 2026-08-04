@@ -12,10 +12,11 @@ on:
       - main
     paths:
       - 'scripts/**'
+      - '.github/workflows/shellcheck.yml'
     
 jobs:
   shellcheck:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4

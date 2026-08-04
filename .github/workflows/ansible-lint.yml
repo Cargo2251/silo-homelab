@@ -12,13 +12,22 @@ on:
       - main
     paths:
       - 'ansible/**'
+      - '.github/workflows/ansible-lint.yml'
 
 jobs:
   ansible-lint:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      
+      - name: Install Python dependency
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+
+      - name: Install ansible-lint
+        run: pip install ansible-lint
 
       - name: Install Ansible collections
         run: ansible-galaxy collection install -r ansible/requirements.yml
